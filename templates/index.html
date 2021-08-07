@@ -1,0 +1,260 @@
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=9" />
+	<title>Indonesian Sentence to Parse Tree</title>
+</head>
+
+
+<body>
+		<h3><center>Indonesian Sentence to Parse Tree</center></h3><div style="text-align:left">
+		</div>
+		
+		<center>
+		<form action="" method="get">
+			<label for="">Enter the sentence here: </label>
+			<input type="text" name="input" value="{{ input_data }}">
+			<button type="submit">Parse</button>
+		</form>
+		</center>
+
+		<br> </br>
+
+		<center>Parse Tree</center>
+		<center><textarea id="i" rows="8" cols="50">{{ hasil }}</textarea></center>
+		<table>
+			<tr>
+				<td>Filename to Save As:</td>
+				<td><input id="inputFileNameToSaveAs"></input></td>
+				<td><button onclick="saveTextAsFile()">Save Parse Tree</button></td>
+			</tr>
+		</table>
+
+		<center><div id="image-goes-here"></div></center>
+
+		<div>
+			<table style="display: none;">
+				<col width="1*">
+				<col width="1*">
+				<tr>
+					<td colspan="2" align="center"><div id="font-style-radio" class="nobr">
+						<input type="radio" name="font-style" id="serif" value="serif" class="redraw" /><label for="serif">Serif</label>
+						<input type="radio" name="font-style" id="sans-serif" value="sans-serif" class="redraw" /><label for="sans-serif">Sans-Serif</label>
+						<input type="radio" name="font-style" id="monospace" value="monospace" class="redraw" checked /><label for="monospace">Monospace</label>
+					</div></td>
+				</tr>
+				<tr>
+					<td align="center">Terminals:</td>
+					<td align="center">Non-terminals:</td>
+				</tr>
+				<tr>
+					<td align="center"><div id="term-font-check" class="nobr">
+						<input type="checkbox" id="term-bold" class="redraw" /><label for="term-bold">Bold</label>
+						<input type="checkbox" id="term-ital" class="redraw" /><label for="term-ital">Italic</label>
+					</span></td>
+					<td align="center"><div id="nonterm-font-check" class="nobr">
+						<input type="checkbox" id="nonterm-bold" class="redraw" /><label for="nonterm-bold">Bold</label>
+						<input type="checkbox" id="nonterm-ital" class="redraw" /><label for="nonterm-ital">Italic</label>
+					</span></td>
+				</tr>
+				<tr>
+					<td align="left">Font size:</td>
+					<td><div id="font-size-slider"></div></td>
+				</tr>
+				<tr>
+					<td align="left">Height:</td>
+					<td><div id="vert-space-slider"></div></td>
+				</tr>
+				<tr>
+					<td align="left">Width:</td>
+					<td><div id="hor-space-slider"></div></td>
+				</tr>
+				<tr>
+					<td align="center" colspan="2"><div class="nobr">
+						<input type="checkbox" id="color-check" class="redraw" checked /><label for="color-check">Color</label>
+						<input type="checkbox" id="term-lines" class="redraw" checked /><label for="term-lines">Terminal lines</label>
+						<a href="#" id="make-link">Link</a>
+					</div></td>
+				</tr>
+			</table>
+		</div>
+	<br />
+
+	<br></br>
+	<center>Bracketing Guidelines for Penn Treebank II Constituency Tags</center>
+	<center><textarea id="bracket" rows="20" readonly>
+S	→ simple declarative clause 
+SBAR	→ clause 
+SBARQ	→ direct question 
+SINV	→ inverted yes/no question X unknown
+ADJ	→ adjective phrase 
+ADVP	→ adverb phrase 
+CONJP	→ conjunction phrase 
+FRAG	→ fragment 
+INTJ	→ interjection 
+NAC	→ not a constituent 
+NP	→ noun phrase 
+PP	→ prepositional phrase 
+PRN	→ parenthetical 
+QP	→ quantifier phrase
+UCP	→ unlike coordinate phrase
+VP	→ verb phrase
+-ADV	→ marks a constituent
+-NOM	→ marks free (”headless”) relatives
+-LGS 	→ mark the logical subject in passives
+-PRD 	→ marks any predicate that is not VP
+-SBJ 	→ marks the structural surface subject
+-TPC 	→ marks elements that appear before the subject
+-VOC 	→ marks nouns of address
+-TMP 	→ marks temporal or aspectual adverbials
+-TTL 	→ attached to the top node of a title</textarea></center>
+
+
+
+
+<style type="text/css">
+body { font-size: small !important; font-family: sans-serif; margin: 20px; background-color: #ffffff}
+#accordion { margin: 0px auto; width: 500px; text-align: center; }
+table { margin: 0px auto; }
+.ui-widget { font-size:small !important; }
+td {font-size:small !important;}
+#bracket {resize: vertical; width: 31%;}
+.i {resize: vertical; width: 30%}
+.cfg {resize: vertical; width: 31%;}
+a.example { text-decoration: none; color: #4183C4!important; }
+.help {text-align: left;}
+#image-goes-here { text-align: center; }
+img { border: 1px solid #bbbbbb; }
+.nobr { white-space: nowrap; }
+</style>
+
+<link type="text/css" href="static/css/cupertino/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
+<script type="text/javascript" src="static/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="static/js/jquery-ui-1.8.18.custom.min.js"></script>
+<script type="text/javascript" src="static/js/base64.js"></script>
+<script type="text/javascript" src="static/js/canvas2image.js"></script>
+<script type="text/javascript" src="static/js/syntree.js"></script>
+<script type="text/javascript">
+
+function saveTextAsFile()
+{
+	var textToWrite = document.getElementById("i").value;
+	var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+	var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
+
+	var downloadLink = document.createElement("a");
+	downloadLink.download = fileNameToSaveAs;
+	downloadLink.innerHTML = "Download File";
+	if (window.webkitURL != null)
+	{
+		downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+	}
+	else
+	{
+		downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+		downloadLink.onclick = destroyClickedElement;
+		downloadLink.style.display = "none";
+		document.body.appendChild(downloadLink);
+	}
+	downloadLink.click();
+}
+
+function destroyClickedElement(event)
+{
+	document.body.removeChild(event.target);
+}
+
+function handler(font_size_update, vert_space_update, hor_space_update) {
+try {
+	// Initialize the various options.
+	var term_font = "";
+	var nonterm_font = "";
+	var color = true;
+	var term_lines = false;
+	if (document.getElementById("term-ital").checked)
+		term_font = term_font + "italic ";
+	if (document.getElementById("term-bold").checked)
+		term_font = term_font + "bold ";
+	if (document.getElementById("nonterm-ital").checked)
+		nonterm_font = nonterm_font + "italic ";
+	if (document.getElementById("nonterm-bold").checked)
+		nonterm_font = nonterm_font + "bold ";
+	console.log(color);
+	if (document.getElementById("color-check").checked)
+		color = true;
+	if (document.getElementById("term-lines").checked)
+		term_lines = true;
+	font_size = 11;
+	vert_space = 70;
+	hor_space = 30;
+	console.log(font_size);
+	console.log(vert_space);
+	console.log(hor_space);
+	if (font_size_update) font_size = font_size_update;
+	if (vert_space_update) vert_space = vert_space_update;
+	if (hor_space_update) hor_space = hor_space_update;
+	term_font = term_font + font_size + "pt ";
+	nonterm_font = nonterm_font + font_size + "pt ";
+	term_font = term_font + $('input:radio[name=font-style]:checked').val();
+	nonterm_font = nonterm_font + $('input:radio[name=font-style]:checked').val();
+	
+	// Get the string.
+	var str = document.getElementById("i").value;
+	
+	/*$("#image-goes-here").text(str + ", " + font_size + ", " + 
+		term_font + ", " + nonterm_font + ", " + vert_space + ", " + hor_space);*/
+	
+	var img = go(str, font_size, term_font, nonterm_font, vert_space, hor_space, color, term_lines);
+	$("#image-goes-here").empty();
+	$("#image-goes-here").append(img);
+	
+} catch (err) {
+	if (debug) {
+		throw(err);
+	} else { 
+		if (err == "canvas")
+			$("#image-goes-here").text("Browser not supported.");
+	}
+} // try-catch
+return false;
+} // handler()
+
+$(function() {
+	// UI
+	$("#make-link, #color-check, #term-lines").button();
+	$("#font-size-slider").slider({value: 12, min: 8, max: 16, step: 1});
+	$("#vert-space-slider").slider({value: 35, min: 35, max: 70, step: 5});
+	$("#hor-space-slider").slider({value: 10, min: 10, max: 50, step: 5});
+	$("#font-style-radio, #term-font-check, #nonterm-font-check").buttonset();
+	$("#accordion").accordion({collapsible: true, icons: false, autoHeight: false});
+	
+	
+	handler();
+	
+	// Events
+	$("#i").keypress(function() {handler(); return true;});
+	$("#i").keyup(function() {handler(); return true;});
+	$("#i").keydown(function() {handler(); return true;});
+	$("#i").change(function() {handler(); return true;});
+	$(".redraw").change(function() {return handler()});
+	$("#make-link").click(function() {
+		var loc = window.location.href;
+		loc = loc.replace(window.location.search, "");
+		
+		window.prompt ("Link for this tree:", loc + "?i=" +
+			encodeURIComponent(document.getElementById("i").value));
+		return false;
+	});
+	$("#font-size-slider").bind("slide", function (event, ui) {
+		handler(ui.value, null, null); return true;
+	});
+	$("#vert-space-slider").bind("slide", function (event, ui) {
+		handler(null, ui.value, null); return true;
+	});
+	$("#hor-space-slider").bind("slide", function (event, ui) {
+		handler(null, null, ui.value); return true;
+	});
+});
+</script>
+
+</body>
+</html>
