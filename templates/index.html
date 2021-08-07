@@ -2,132 +2,175 @@
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=9" />
 	<title>Indonesian Sentence to Parse Tree</title>
+
+	<link type="text/css" href="static/css/cupertino/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
+	<style type="text/css">
+		body { 
+			font-size: small !important; 
+			font-family: sans-serif; 
+			margin: 20px; 
+			background-color: #ffffff
+		}
+	
+		#accordion { 
+			margin: 0px auto; 
+			width: 500px; 
+			text-align: 
+			center; 
+		}
+	
+		table { 
+			margin: 0px auto; 
+		}
+	
+		.ui-widget { 
+			font-size:small !important; 
+		}
+	
+		td {
+			font-size:small !important;
+		}
+	
+		#bracket {
+			resize: vertical; 
+			width: 31%;
+		}
+	
+		.i {
+			resize: vertical; 
+			width: 30%;
+		}
+		.cfg {
+			resize: vertical; 
+			width: 31%;
+		}
+	
+		a.example { 
+			text-decoration: none; 
+			color: #4183C4!important; 
+		}
+	
+		.help {
+			text-align: left;
+		}
+	
+		#image-goes-here { 
+			text-align: center; 
+		}
+		img { 
+			border: 1px solid #bbbbbb; 
+		}
+	
+		.nobr { 
+			white-space: nowrap; 
+		}
+	</style>
 </head>
 
 
 <body>
-		<h3><center>Indonesian Sentence to Parse Tree</center></h3><div style="text-align:left">
-		</div>
+	<h3><center>Indonesian Sentence to Parse Tree</center></h3>
+	<div style="text-align:left"></div><center>
 		
-		<center>
-		<form action="" method="get">
-			<label for="">Enter the sentence here: </label>
-			<input type="text" name="input" value="{{ input_data }}">
-			<button type="submit">Parse</button>
-		</form>
-		</center>
+	<form action="" method="get">
+		<label for="">Enter the sentence here: </label>
+		<input type="text" name="input" value="{{ input_data }}">
+		<button type="submit">Parse</button>
+	</form>
+	</center>
 
-		<br> </br>
+	<br> </br>
 
-		<center>Parse Tree</center>
-		<center><textarea id="i" rows="8" cols="50">{{ hasil }}</textarea></center>
-		<table>
+	<center>Parse Tree</center>
+	<center><textarea id="i" rows="8" cols="50">{{ hasil }}</textarea></center>
+	<table>
+		<tr>
+			<td>Filename to Save As:</td>
+			<td><input id="inputFileNameToSaveAs"></input></td>
+			<td><button onclick="saveTextAsFile()">Save Parse Tree</button></td>
+		</tr>
+	</table>
+
+	<center><div id="image-goes-here"></div></center>
+
+	<div>
+		<table style="display: none;">
+			<col width="1*">
+			<col width="1*">
 			<tr>
-				<td>Filename to Save As:</td>
-				<td><input id="inputFileNameToSaveAs"></input></td>
-				<td><button onclick="saveTextAsFile()">Save Parse Tree</button></td>
+				<td colspan="2" align="center"><div id="font-style-radio" class="nobr">
+					<input type="radio" name="font-style" id="serif" value="serif" class="redraw" /><label for="serif">Serif</label>
+					<input type="radio" name="font-style" id="sans-serif" value="sans-serif" class="redraw" /><label for="sans-serif">Sans-Serif</label>
+					<input type="radio" name="font-style" id="monospace" value="monospace" class="redraw" checked /><label for="monospace">Monospace</label>
+				</div></td>
+			</tr>
+			<tr>
+				<td align="center">Terminals:</td>
+				<td align="center">Non-terminals:</td>
+			</tr>
+			<tr>
+				<td align="center"><div id="term-font-check" class="nobr">
+					<input type="checkbox" id="term-bold" class="redraw" /><label for="term-bold">Bold</label>
+					<input type="checkbox" id="term-ital" class="redraw" /><label for="term-ital">Italic</label>
+				</span></td>
+				<td align="center"><div id="nonterm-font-check" class="nobr">
+					<input type="checkbox" id="nonterm-bold" class="redraw" /><label for="nonterm-bold">Bold</label>
+					<input type="checkbox" id="nonterm-ital" class="redraw" /><label for="nonterm-ital">Italic</label>
+				</span></td>
+			</tr>
+			<tr>
+				<td align="left">Font size:</td>
+				<td><div id="font-size-slider"></div></td>
+			</tr>
+			<tr>
+				<td align="left">Height:</td>
+				<td><div id="vert-space-slider"></div></td>
+			</tr>
+			<tr>
+				<td align="left">Width:</td>
+				<td><div id="hor-space-slider"></div></td>
+			</tr>
+			<tr>
+				<td align="center" colspan="2"><div class="nobr">
+					<input type="checkbox" id="color-check" class="redraw" checked /><label for="color-check">Color</label>
+					<input type="checkbox" id="term-lines" class="redraw" checked /><label for="term-lines">Terminal lines</label>
+					<a href="#" id="make-link">Link</a>
+				</div></td>
 			</tr>
 		</table>
-
-		<center><div id="image-goes-here"></div></center>
-
-		<div>
-			<table style="display: none;">
-				<col width="1*">
-				<col width="1*">
-				<tr>
-					<td colspan="2" align="center"><div id="font-style-radio" class="nobr">
-						<input type="radio" name="font-style" id="serif" value="serif" class="redraw" /><label for="serif">Serif</label>
-						<input type="radio" name="font-style" id="sans-serif" value="sans-serif" class="redraw" /><label for="sans-serif">Sans-Serif</label>
-						<input type="radio" name="font-style" id="monospace" value="monospace" class="redraw" checked /><label for="monospace">Monospace</label>
-					</div></td>
-				</tr>
-				<tr>
-					<td align="center">Terminals:</td>
-					<td align="center">Non-terminals:</td>
-				</tr>
-				<tr>
-					<td align="center"><div id="term-font-check" class="nobr">
-						<input type="checkbox" id="term-bold" class="redraw" /><label for="term-bold">Bold</label>
-						<input type="checkbox" id="term-ital" class="redraw" /><label for="term-ital">Italic</label>
-					</span></td>
-					<td align="center"><div id="nonterm-font-check" class="nobr">
-						<input type="checkbox" id="nonterm-bold" class="redraw" /><label for="nonterm-bold">Bold</label>
-						<input type="checkbox" id="nonterm-ital" class="redraw" /><label for="nonterm-ital">Italic</label>
-					</span></td>
-				</tr>
-				<tr>
-					<td align="left">Font size:</td>
-					<td><div id="font-size-slider"></div></td>
-				</tr>
-				<tr>
-					<td align="left">Height:</td>
-					<td><div id="vert-space-slider"></div></td>
-				</tr>
-				<tr>
-					<td align="left">Width:</td>
-					<td><div id="hor-space-slider"></div></td>
-				</tr>
-				<tr>
-					<td align="center" colspan="2"><div class="nobr">
-						<input type="checkbox" id="color-check" class="redraw" checked /><label for="color-check">Color</label>
-						<input type="checkbox" id="term-lines" class="redraw" checked /><label for="term-lines">Terminal lines</label>
-						<a href="#" id="make-link">Link</a>
-					</div></td>
-				</tr>
-			</table>
-		</div>
+	</div>
 	<br />
 
 	<br></br>
 	<center>Bracketing Guidelines for Penn Treebank II Constituency Tags</center>
 	<center><textarea id="bracket" rows="20" readonly>
-S	→ simple declarative clause 
-SBAR	→ clause 
-SBARQ	→ direct question 
-SINV	→ inverted yes/no question X unknown
-ADJ	→ adjective phrase 
-ADVP	→ adverb phrase 
-CONJP	→ conjunction phrase 
-FRAG	→ fragment 
-INTJ	→ interjection 
-NAC	→ not a constituent 
-NP	→ noun phrase 
-PP	→ prepositional phrase 
-PRN	→ parenthetical 
-QP	→ quantifier phrase
-UCP	→ unlike coordinate phrase
-VP	→ verb phrase
--ADV	→ marks a constituent
--NOM	→ marks free (”headless”) relatives
--LGS 	→ mark the logical subject in passives
--PRD 	→ marks any predicate that is not VP
--SBJ 	→ marks the structural surface subject
--TPC 	→ marks elements that appear before the subject
--VOC 	→ marks nouns of address
--TMP 	→ marks temporal or aspectual adverbials
--TTL 	→ attached to the top node of a title</textarea></center>
+		S	→ simple declarative clause 
+		SBAR	→ clause 
+		SBARQ	→ direct question 
+		SINV	→ inverted yes/no question X unknown
+		ADJ	→ adjective phrase 
+		ADVP	→ adverb phrase 
+		CONJP	→ conjunction phrase 
+		FRAG	→ fragment 
+		INTJ	→ interjection 
+		NAC	→ not a constituent 
+		NP	→ noun phrase 
+		PP	→ prepositional phrase 
+		PRN	→ parenthetical 
+		QP	→ quantifier phrase
+		UCP	→ unlike coordinate phrase
+		VP	→ verb phrase
+		-ADV	→ marks a constituent
+		-NOM	→ marks free (”headless”) relatives
+		-LGS 	→ mark the logical subject in passives
+		-PRD 	→ marks any predicate that is not VP
+		-SBJ 	→ marks the structural surface subject
+		-TPC 	→ marks elements that appear before the subject
+		-VOC 	→ marks nouns of address
+		-TMP 	→ marks temporal or aspectual adverbials
+		-TTL 	→ attached to the top node of a title
+	</textarea></center>
 
-
-
-
-<style type="text/css">
-body { font-size: small !important; font-family: sans-serif; margin: 20px; background-color: #ffffff}
-#accordion { margin: 0px auto; width: 500px; text-align: center; }
-table { margin: 0px auto; }
-.ui-widget { font-size:small !important; }
-td {font-size:small !important;}
-#bracket {resize: vertical; width: 31%;}
-.i {resize: vertical; width: 30%}
-.cfg {resize: vertical; width: 31%;}
-a.example { text-decoration: none; color: #4183C4!important; }
-.help {text-align: left;}
-#image-goes-here { text-align: center; }
-img { border: 1px solid #bbbbbb; }
-.nobr { white-space: nowrap; }
-</style>
-
-<link type="text/css" href="static/css/cupertino/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
 <script type="text/javascript" src="static/js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="static/js/jquery-ui-1.8.18.custom.min.js"></script>
 <script type="text/javascript" src="static/js/base64.js"></script>
